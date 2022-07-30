@@ -8,8 +8,9 @@ import 'package:http/http.dart' as http;
 
 abstract class Service{
   Future<List<RoutineModel>>GetUserRoutine(String userId, String dateTime);
-  Future<bool>AddRoutine(Map<String, String> param);
-  }
+  Future<bool>AddRoutine(Map<String, dynamic> param);
+  Future<bool>DeleteRoutine(Map<String, dynamic> param);
+}
 
 class UserRoutineService extends Service {
   @override
@@ -49,6 +50,31 @@ class UserRoutineService extends Service {
           encoding: Encoding.getByName(UTF_8),
           body: jsonEncode(param)
       );
+      if(res.statusCode != STATUS_OK) {
+        throw Exception(res.body.toString());
+      } else {
+        if (res.body == OK) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch(e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<bool>DeleteRoutine(Map<String, dynamic> param) async {
+    try {
+      var url = Uri.parse(HOST + ROUTINE_ENDPOINT + "User/Delete");
+      var res = await http.post(
+          url,
+          headers: HEADER,
+          encoding: Encoding.getByName(UTF_8),
+          body: jsonEncode(param)
+      );
+      print(res.body);
       if(res.statusCode != STATUS_OK) {
         throw Exception(res.body.toString());
       } else {

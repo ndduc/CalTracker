@@ -19,6 +19,10 @@ class MainRepository{
     return UserRoutineService().AddRoutine(param);
   }
 
+  Future<bool>DeleteRoutine(Map<String, dynamic> param) {
+    return UserRoutineService().DeleteRoutine(param);
+  }
+
   /// USER
   Future<UserModel>GetUser(String userName, String password) {
     return UserService().GetUser(userName, password);

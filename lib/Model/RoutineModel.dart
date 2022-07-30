@@ -1,5 +1,6 @@
 class RoutineModel {
   late String userId;
+  String routineId = "";
   late String searchText;
   late DateTime searchDate;
   late double amountByGram;
@@ -30,6 +31,7 @@ class RoutineModel {
 
   RoutineModel.map(Map<String, dynamic> map) {
     userId = map["UserId"].toString();
+    routineId = map["RoutineId"].toString();
     searchText = map["SearchText"].toString();
     searchDate = DateTime.parse(map["SearchDate"]);
     amountByGram = map["AmountByGram"];
@@ -61,6 +63,7 @@ class RoutineModel {
   Map<String, dynamic> toMap() {
     return {
       "userId": userId,
+      "routineId": routineId,
       "searchText": searchText,
       "searchDate": searchDate.toString(),
       "amountByGram": amountByGram.toString(),

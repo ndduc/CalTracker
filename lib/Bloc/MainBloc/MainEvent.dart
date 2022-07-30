@@ -7,6 +7,7 @@ enum MainEvent{
   Event_NinjaFood_Get,
   Event_Routine_Add,
   Event_Routine_Get,
+  Event_Routine_Delete,
   Event_User_Upsert,
   Event_User_Get,
   Event_User_Verify,
@@ -33,6 +34,7 @@ class MainParam {
   MainParam.GenericLoading({required this.eventStatus});
   MainParam.GetFood({required this.eventStatus, required this.param});
   MainParam.AddRoutine({required this.eventStatus, required this.routine});
+  MainParam.DeleteRoutine({required this.eventStatus, required this.routine});
   MainParam.GetRoutine({required this.eventStatus, required this.param});
   MainParam.GetUser({required this.eventStatus, required this.param});
   MainParam.UpsertUser({required this.eventStatus, required this.user});

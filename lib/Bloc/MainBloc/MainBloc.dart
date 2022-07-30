@@ -62,9 +62,20 @@ class MainBloc extends Bloc<MainParam,MainState>
           Map<String, dynamic> param = routine.toMap();
           var res = await repos.AddRoutine(param);
           yield AddRoutineLoadedState(isSucessful: res);
-
         } catch (e) {
           yield AddRoutineErrorState(error: e);
+        }
+        break;
+      case MainEvent.Event_Routine_Delete:
+        yield DeleteRoutineInitState();
+        try {
+          yield DeleteRoutineLoadingState();
+          var routine = event.routine;
+          Map<String, dynamic> param = routine.toMap();
+          var res = await repos.DeleteRoutine(param);
+          yield DeleteRoutineLoadedState(isSucessful: res,  deletedRoutineId: routine.routineId);
+        } catch (e) {
+          yield DeleteRoutineErrorState(error: e);
         }
         break;
       case MainEvent.Event_Routine_Get:

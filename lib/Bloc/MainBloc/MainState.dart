@@ -61,6 +61,20 @@ class AddRoutineErrorState extends MainState {
   AddRoutineErrorState({this.error});
 }
 
+/// Delete Routine
+class DeleteRoutineInitState extends MainState {}
+class DeleteRoutineLoadingState extends MainState {}
+class DeleteRoutineLoadedState extends MainState {
+  late bool isSucessful;
+  String deletedRoutineId = "";
+  DeleteRoutineLoadedState({required this.isSucessful, required this.deletedRoutineId});
+}
+class DeleteRoutineErrorState extends MainState {
+  final error;
+  DeleteRoutineErrorState({this.error});
+}
+
+
 /// USER STATE
 /// Get User
 class GetUserInitState extends MainState {}
