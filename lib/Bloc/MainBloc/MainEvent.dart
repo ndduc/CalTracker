@@ -16,6 +16,8 @@ enum MainEvent{
   Event_Nav_User,
   Event_Nav_Login,
   Event_Nav_Calo,
+  Event_Nav_Logout, /// Clear UserModel Data and Clear Shared Pref
+  Event_Nav_Registration,
 
   /// Simple State Event
   Event_Widget_State_Bool,
@@ -42,6 +44,9 @@ class MainParam {
 
   MainParam.NavToUser({required this.eventStatus, required this.context, required this.user});
   MainParam.NavToCalo({required this.eventStatus, required this.context, required this.user});
+  MainParam.NavToLogout({required this.eventStatus, required this.context});
+  MainParam.Event_Nav_Registration({required this.eventStatus, required this.context});
+
 
   MainParam.WidgetStateBool({required this.eventStatus, required this.stateBool});
   MainParam.WidgetStateInt({required this.eventStatus, required this.stateInt});

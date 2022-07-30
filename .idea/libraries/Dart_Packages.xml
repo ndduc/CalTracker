@@ -205,6 +205,13 @@
             </list>
           </value>
         </entry>
+        <entry key="fluttericon">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/fluttericon-2.0.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="html">
           <value>
             <list>
@@ -738,6 +745,7 @@
       <root url="file://$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_lints-1.0.4/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.7/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_spinkit-5.1.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/fluttericon-2.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/html-0.15.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.13.4/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.1/lib" />

@@ -105,9 +105,27 @@ class UpsertUserInitState extends MainState {}
 class UpsertUserLoadingState extends MainState {}
 class UpsertUserLoadedState extends MainState {
   late bool isSucessful;
-  UpsertUserLoadedState({required this.isSucessful});
+  late UserModel model;
+  UpsertUserLoadedState({required this.isSucessful, required this.model});
 }
 class UpsertUserErrorState extends MainState {
   final error;
   UpsertUserErrorState({this.error});
 }
+
+
+/// LOGOUT
+class LogoutInitState extends MainState {}
+class LogoutLoadingState extends MainState {}
+class LogoutLoadedState extends MainState {
+  late bool isSucessful;
+  LogoutLoadedState({required this.isSucessful});
+}
+class LogoutErrorState extends MainState {
+  final error;
+  LogoutErrorState({this.error});
+}
+
+
+/// NAV
+class LoadedNavToRoutineView extends MainState {}

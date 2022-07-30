@@ -27,7 +27,7 @@ class MainRepository{
   Future<UserModel>GetUser(String userName, String password) {
     return UserService().GetUser(userName, password);
   }
-  Future<bool>UpsertUser(Map<String, String> param) {
+  Future<bool>UpsertUser(Map<String, dynamic> param) {
     return UserService().UpsertUser(param);
   }
   Future<bool>VerifyUserName(String userName) {

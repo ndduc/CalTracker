@@ -68,7 +68,7 @@ class _View extends State<LoginView> {
              * END
              * */
             return Container(
-                padding: EdgeInsets.only(top: 50),
+                // padding: EdgeInsets.only(top: 50),
                 // decoration: BoxDecoration(
                 //   image: DecorationImage(
                 //     image: AssetImage(uImage.mapImage['bg-3']),
@@ -82,6 +82,8 @@ class _View extends State<LoginView> {
 
   Widget mainBody() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Custom_ListTile_TextField(
             read: false,
@@ -100,7 +102,9 @@ class _View extends State<LoginView> {
             isNumber:false,
             mask: false
         ),
-        solidButton("ENTER", "HIT")
+        solidButton("Login", "LOGIN"),
+        solidButton("Registration", "REGISTER")
+
       ],
     );
   }
@@ -131,6 +135,7 @@ class _View extends State<LoginView> {
       prefs.setBool("loginPersistence", userModel.loginPersistence);
       prefs.setString("created", userModel.created.toString());
       prefs.setString("updated", userModel.updated.toString());
+      prefs.setString("dailyCaloriesLimit", userModel.dailyCaloriesLimit.toString());
     }
   }
 
@@ -138,9 +143,12 @@ class _View extends State<LoginView> {
     final SharedPreferences prefs = await _prefs;
     var uname = prefs.getString("userName");
     var pass = prefs.getString("password");
-
-    if (uname!.isNotEmpty && pass!.isNotEmpty) {
-      authentication(uname, pass);
+    try {
+      if (uname!.isNotEmpty && pass!.isNotEmpty) {
+        authentication(uname, pass);
+      }
+    } catch(e) {
+      print("Shared Pref Not Found");
     }
   }
 
@@ -155,14 +163,22 @@ class _View extends State<LoginView> {
       "user": user,
       "password": pass
     };
-
     context.read<MainBloc>().add(MainParam.GetUser(eventStatus: MainEvent.Event_User_Get, param: param));
+  }
+
+
+  void toRegistrationView() {
+    context.read<MainBloc>().add(MainParam.Event_Nav_Registration(eventStatus: MainEvent.Event_Nav_Registration, context: context));
 
   }
+
   void solidButtonEvent(String event) {
     switch (event) {
-      case "HIT":
+      case "LOGIN":
         authentication( eTUserName.text, eTPassword.text);
+        break;
+      case "REGISTER":
+        toRegistrationView();
         break;
       default:
         break;

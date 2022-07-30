@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 abstract class Service{
   Future<UserModel>GetUser(String userName, String password);
-  Future<bool>UpsertUser(Map<String, String> param);
+  Future<bool>UpsertUser(Map<String, dynamic> param);
   Future<bool>VerifyUserName(String userName);
 }
 
@@ -34,21 +34,20 @@ class UserService extends Service {
   }
 
   @override
-  Future<bool>UpsertUser(Map<String, String> param) async {
+  Future<bool>UpsertUser(Map<String, dynamic> param) async {
     try {
       var url = Uri.parse(HOST + USER_ENDPOINT + "Save");
       var res = await http.post(
           url,
           headers: HEADER,
           encoding: Encoding.getByName(UTF_8),
-          body: param
+          body: jsonEncode(param)
       );
       if(res.statusCode != STATUS_OK) {
         throw Exception(res.body.toString());
       } else {
-        var json = jsonDecode(res.body);
-        String response = json[BODY];
-        if (response == OK) {
+        var json = res.body;
+        if (json == OK) {
           return true;
         } else {
           return false;

@@ -3,6 +3,7 @@ import 'package:calories_tracker/Bloc/MainBloc/MainEvent.dart';
 import 'package:calories_tracker/Bloc/MainBloc/MainState.dart';
 import 'package:calories_tracker/Component/ListTextField.dart';
 import 'package:calories_tracker/Component/Spinner.dart';
+import 'package:calories_tracker/Constant_Value/AppColor.dart';
 import 'package:calories_tracker/Helper/StringHelper.dart';
 import 'package:calories_tracker/Model/FoodObjectsModel.dart';
 import 'package:calories_tracker/Model/RoutineModel.dart';
@@ -80,7 +81,6 @@ class _View extends State<UpsertCalView> {
     if (state is AddRoutineInitState) {
       isLoadingAddRoutine = false;
     } else if (state is AddRoutineLoadingState) {
-      print("add loading");
       isLoadingAddRoutine = true;
     } else if (state is AddRoutineLoadedState) {
       if (state.isSucessful) {
@@ -115,8 +115,8 @@ class _View extends State<UpsertCalView> {
              * */
             return Container(
               height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                color: Color(0xfff6f6f6)
+              decoration: const BoxDecoration(
+                color: Color(calTracker_White)
               ),
                 child: mainBody());
           }),
@@ -135,10 +135,11 @@ class _View extends State<UpsertCalView> {
   Widget mainBody() {
     determineIntakeReadonly();
     return SingleChildScrollView(
+      padding: const EdgeInsets.only(top: 45),
       scrollDirection: Axis.vertical,
       child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xfff6f6f6)
+        decoration: const BoxDecoration(
+          color: Color(calTracker_White)
         ),
         child:  Column(
           children: [
@@ -176,19 +177,7 @@ class _View extends State<UpsertCalView> {
             //   ],
             // ),
             /// State of this need to be fixed
-            ApiOrCustom(),
-            Custom_ListTile_TextField(
-                read: isInTakeReadOnly,
-                controller: eTIntake,
-                labelText: "Intake By Gram",
-                isMask: false,
-                isNumber:true,
-                mask: false,
-                onChange: (value) {
-                  CalculateCalWithIntake(value);
-                },
-            ),
-            TotalCaloriesContainer(),
+            calInputCard(),
             showNutritionFact(),
           ],
         )
@@ -197,25 +186,82 @@ class _View extends State<UpsertCalView> {
     );
   }
 
-  Widget TotalCaloriesContainer() {
+  Widget calInputCard() {
+    return Card(
+      child: ClipPath(
+        clipper: ShapeBorderClipper(
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3))),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: const BoxDecoration(
+              border: Border(
+                  left: BorderSide(
+                      color: Color(calTracker_LightBlue),
+                      width: 5
+                  )
+              )
+          ),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 10, bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Enter any food name to get the estimate calories per gram: ")
+                  ],
+                ),
+              ),
+              ApiOrCustom(),
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Enter your daily calories (g): ")
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: TotalCaloriesContainer(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-    int flex_a = 10;
-    int flex_b = 0;
+  Widget TotalCaloriesContainer() {
     bool willShowButton = false;
     if (isFoodFound && !isCustom) {
-      flex_a = 9;
-      flex_b = 1;
       willShowButton = true;
     } else {
-      flex_a = 10;
-      flex_b = 0;
       willShowButton = false;
     }
 
     return Row(
       children: [
         Expanded(
-            flex: flex_a,
+          flex: 4,
+          child: Custom_ListTile_TextField(
+            read: isInTakeReadOnly,
+            controller: eTIntake,
+            labelText: "Intake By Gram",
+            isMask: false,
+            isNumber:true,
+            mask: false,
+            onChange: (value) {
+              CalculateCalWithIntake(value);
+            },
+          ),
+        ),
+        Expanded(
+            flex: 5,
             child: Custom_ListTile_TextField(
                 read: true,
                 controller: eTTotalCal,
@@ -227,9 +273,9 @@ class _View extends State<UpsertCalView> {
         ),
         !willShowButton ? SizedBox() :
         Expanded(
-          flex: flex_b,
+          flex: 1,
           child: isLoadingAddRoutine ? ShareSpinner() : IconButton(
-            icon: Icon(Icons.edit),
+            icon: Icon(Icons.add),
             onPressed: () {
               addCaloriesEvent();
             },
@@ -318,7 +364,7 @@ class _View extends State<UpsertCalView> {
         return ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
-            itemCount: foodObjects.listFood.length,
+            itemCount: foodObjects.listFood.isNotEmpty ? 1 :  0,
             itemBuilder: (context, index) {
               return Container(
                 // padding: const EdgeInsets.all(8),

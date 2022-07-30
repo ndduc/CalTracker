@@ -6,6 +6,7 @@ import 'package:calories_tracker/Component/Spinner.dart';
 import 'package:calories_tracker/Helper/StringHelper.dart';
 import 'package:calories_tracker/Model/RoutineModel.dart';
 import 'package:calories_tracker/Model/UserModel.dart';
+import 'package:calories_tracker/View/AppInfo/AppInfoView.dart';
 import 'package:calories_tracker/View/Calo/UpsertCalView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
 import '../../Constant_Value/AppColor.dart';
+import 'UserUpdate.dart';
 
+// ignore: must_be_immutable
 class UserView extends StatefulWidget {
   UserModel userModel;
   UserView({Key? key, required this.userModel}) : super(key: key);
@@ -32,7 +35,7 @@ class _View extends State<UserView> {
   double totalDailyCal = 0;
   double totalDailyProtein = 0;
 
-  double maxDailyCalories = 2500;
+  double maxDailyCalories = 0;
   double caloriesRatio = 0;
   double remainingCaloriesRatio = 100;
 
@@ -81,7 +84,7 @@ class _View extends State<UserView> {
   void initState() {
     super.initState();
     userModel = widget.userModel;
-    widget.userModel.printToString();
+  //  maxDailyCalories = userModel.dailyCaloriesLimit;
     getDailyRoutine();
   }
 
@@ -129,19 +132,17 @@ class _View extends State<UserView> {
     }
     else if (state is GetRoutineLoadingState) {
       isLoading = true;
-
     }
     else if (state is GetRoutineLoadedState) {
+      maxDailyCalories = userModel.dailyCaloriesLimit;
       routineList = state.routines;
-      CalculatingConsumingCalories();
+      calculatingConsumingCalories();
       isLoading = false;
-
     }
     else if (state is GetRoutineErrorState) {
+      maxDailyCalories = userModel.dailyCaloriesLimit;
       isLoading = false;
-
     }
-
     else if (state is DeleteRoutineInitState) {
       isLoadingDeleteRoutine = false;
     }
@@ -149,22 +150,21 @@ class _View extends State<UserView> {
       isLoadingDeleteRoutine = true;
     }
     else if (state is DeleteRoutineLoadedState) {
-      for(int i = 0; i < this.routineList.length; i++) {
-        if (this.routineList[i].routineId == state.deletedRoutineId) {
-          this.routineList.removeAt(i);
+      for(int i = 0; i < routineList.length; i++) {
+        if (routineList[i].routineId == state.deletedRoutineId) {
+          routineList.removeAt(i);
         }
       }
-      CalculatingConsumingCalories();
+      calculatingConsumingCalories();
       setIntakeAndRemainColor();
       isLoadingDeleteRoutine = false;
     }
     else if (state is DeleteRoutineErrorState) {
-      print(state.error);
       isLoadingDeleteRoutine = false;
     }
   }
 
-  void CalculatingConsumingCalories() {
+  void calculatingConsumingCalories() {
     caloriesRatio = 0;
     remainingCaloriesRatio = 100;
     totalDailyCal = 0;
@@ -196,7 +196,7 @@ class _View extends State<UserView> {
              * END
              * */
             return Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(calTracker_White)
               ),
                 child: Column(
@@ -208,8 +208,8 @@ class _View extends State<UserView> {
                       backgroundColor: const Color(calTracker_Red),
                       items: const <BottomNavigationBarItem>[
                         BottomNavigationBarItem(
-                          icon: Icon(Icons.home),
-                          label: 'Home',
+                          icon: Icon(Icons.track_changes),
+                          label: 'Tracker',
                           backgroundColor: Color(calTracker_Red),
                         ),
                         BottomNavigationBarItem(
@@ -219,12 +219,12 @@ class _View extends State<UserView> {
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.settings),
-                          label: 'Settings',
+                          label: 'User Settings',
                           backgroundColor: Colors.pink,
                         ),
                         BottomNavigationBarItem(
-                          icon: Icon(Icons.settings),
-                          label: 'Settings',
+                          icon: Icon(Icons.info),
+                          label: 'App Info',
                           backgroundColor: Colors.pink,
                         ),
                       ],
@@ -242,29 +242,41 @@ class _View extends State<UserView> {
   Widget mainBody() {
     switch(_selectedIndex) {
       case 0:
-        return RoutineBody();
+        return routineBody();
       case 1:
-        return AddCalBody();
+        return addCalBody();
+      case 2 :
+        return addUserUpdateViewBody();
+      case 3:
+        return addAppInfoViewBody();
       default:
         return SizedBox();
     }
   }
 
-  Widget AddCalBody() {
+  Widget addUserUpdateViewBody() {
+    return UserUpdateView(userModel: userModel);
+  }
+
+  Widget addCalBody() {
     return UpsertCalView(userModel: userModel);
   }
 
-  Widget RoutineBody() {
+  Widget addAppInfoViewBody() {
+    return AppInfoView(userModel: userModel);
+  }
+
+  Widget routineBody() {
     if (!isLoading) {
       return Column(
         children: [
           Expanded(
             flex: 4,
-            child: ChartContainer(),
+            child: chartContainer(),
           ),
           Expanded(
               flex: 6,
-              child:RoutineContainer()
+              child:routineContainer()
           ),
         ],
       );
@@ -274,7 +286,7 @@ class _View extends State<UserView> {
 
   }
 
-  Widget RoutineContainer() {
+  Widget routineContainer() {
     return Container(
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
@@ -282,13 +294,13 @@ class _View extends State<UserView> {
         ),
         child:  Column(
           children: [
-            Expanded(child: TodayRoutineList())
+            Expanded(child: todayRoutineList())
           ],
         )
     );
   }
 
-  Widget TodayRoutineList() {
+  Widget todayRoutineList() {
     if (routineList.isNotEmpty) {
       return ListView.builder(
           scrollDirection: Axis.vertical,
@@ -380,10 +392,9 @@ class _View extends State<UserView> {
                             ),
                           ),
                           Container(
-                            child: IconButton(
+                            child: isLoadingDeleteRoutine ? ShareSpinner():   IconButton(
                               icon: Icon(Icons.delete),
                               onPressed: () {
-                                print("Routine Len\t\t" + routineList.length.toString());
                                 deleteRoutine(routineList[index]);
                               },
                             ),
@@ -421,7 +432,7 @@ class _View extends State<UserView> {
     ) ;
   }
 
-  Widget ChartContainer() {
+  Widget chartContainer() {
     var currentDatetime = DateTime.now();
     var formatter = DateFormat('yyyy-MM-dd');
     var date = formatter.format(currentDatetime);
@@ -429,11 +440,11 @@ class _View extends State<UserView> {
     setIntakeAndRemainColor();
 
     return Container(
-      padding: EdgeInsets.only(top: 30),
+      padding: const EdgeInsets.only(top: 30),
       decoration: BoxDecoration(
-        color: Color(calTracker_LightBlue),
-        border: Border.all(color: Color(calTracker_LightBlue)),
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+        color: const Color(calTracker_LightBlue),
+        border: Border.all(color: const Color(calTracker_LightBlue)),
+        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
 
       ),
       child:  Row(
@@ -448,7 +459,7 @@ class _View extends State<UserView> {
                     children: [
                       Text(
                         date,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                         ),
@@ -467,7 +478,7 @@ class _View extends State<UserView> {
                           ),
                           Text(
                             "/" +  maxDailyCalories.toStringAsFixed(0),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                                 color: Color(calTracker_White)
@@ -496,7 +507,7 @@ class _View extends State<UserView> {
                       borderData: FlBorderData(
                         show: false,
                       ),
-                      sectionsSpace: 3,
+                      sectionsSpace: 2,
                       centerSpaceRadius: 60,
                       sections: showingSections()),
                 )

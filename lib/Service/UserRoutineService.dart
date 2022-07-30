@@ -74,7 +74,6 @@ class UserRoutineService extends Service {
           encoding: Encoding.getByName(UTF_8),
           body: jsonEncode(param)
       );
-      print(res.body);
       if(res.statusCode != STATUS_OK) {
         throw Exception(res.body.toString());
       } else {
