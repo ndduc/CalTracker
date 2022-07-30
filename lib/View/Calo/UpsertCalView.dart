@@ -210,8 +210,8 @@ class _View extends State<UpsertCalView> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      child: Text("Enter any food name to get the estimate calories per gram: ")
+                    Expanded(
+                      child: Text("Enter any food name to get the estimate calories per gram:")
                     )
                   ],
                 ),
@@ -223,7 +223,9 @@ class _View extends State<UpsertCalView> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Enter your daily calories (g): ")
+                    Expanded(
+                        child: Text("Enter your daily calories (g): ")
+                    )
                   ],
                 ),
               ),
