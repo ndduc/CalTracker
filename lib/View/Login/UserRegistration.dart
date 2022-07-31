@@ -29,7 +29,7 @@ class _View extends State<UserRegistrationView> {
   TextEditingController eTUserName = TextEditingController();
   TextEditingController eTPassword = TextEditingController();
   TextEditingController eTLimitCal = TextEditingController();
-  // var formKey = GlobalKey<FormState>();
+  var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -106,11 +106,12 @@ class _View extends State<UserRegistrationView> {
                     //     )
                     // )
                 ),
-                child: mainBody()
-                // Form(
-                //   key: formKey,
-                //   child: mainBody(),
-                // )
+                child:
+                // mainBody()
+                Form(
+                  key: formKey,
+                  child: mainBody(),
+                )
             );
           }),
         ));
@@ -159,13 +160,13 @@ class _View extends State<UserRegistrationView> {
             isMask: false,
             isNumber:false,
             mask: false,
-            // validations: (value) {
-            //   if(eTUserName.text.isNotEmpty) {
-            //     return null;
-            //   } else {
-            //     return "Please Provide Username";
-            //   }
-            // },
+            validations: (value) {
+              if(eTUserName.text.isNotEmpty) {
+                return null;
+              } else {
+                return "Please Provide Username";
+              }
+            },
           ),
         ),
         Expanded(
@@ -177,13 +178,13 @@ class _View extends State<UserRegistrationView> {
                 isMask: false,
                 isNumber:false,
                 mask: false,
-                // validations: (value) {
-                //   if(eTPassword.text.isNotEmpty) {
-                //     return null;
-                //   } else {
-                //     return "Please Provide Password";
-                //   }
-                // },
+                validations: (value) {
+                  if(eTPassword.text.isNotEmpty) {
+                    return null;
+                  } else {
+                    return "Please Provide Password";
+                  }
+                },
             )
         ),
       ],
@@ -200,13 +201,13 @@ class _View extends State<UserRegistrationView> {
         isMask: false,
         isNumber:true,
         mask: false,
-        // validations: (value) {
-        //   if(eTLimitCal.text.isNotEmpty) {
-        //     return null;
-        //   } else {
-        //     return "Please Provide Your Daily Calories Limit";
-        //   }
-        // },
+        validations: (value) {
+          if(eTLimitCal.text.isNotEmpty) {
+            return null;
+          } else {
+            return "Please Provide Your Daily Calories Limit";
+          }
+        },
       ),
     );
   }
@@ -238,19 +239,19 @@ class _View extends State<UserRegistrationView> {
   void solidButtonEvent(String event) {
     switch (event) {
       case "REGISTRATION":
-        userModel = UserModel();
-        userModel.userName = eTUserName.text;
-        userModel.password = eTPassword.text;
-        userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
-        context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
-        // bool val = formKey.currentState!.validate();
-        // if(val) {
-        //   userModel = UserModel();
-        //   userModel.userName = eTUserName.text;
-        //   userModel.password = eTPassword.text;
-        //   userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
-        //   context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
-        // }
+        // userModel = UserModel();
+        // userModel.userName = eTUserName.text;
+        // userModel.password = eTPassword.text;
+        // userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
+        // context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
+        bool val = formKey.currentState!.validate();
+        if(val) {
+          userModel = UserModel();
+          userModel.userName = eTUserName.text;
+          userModel.password = eTPassword.text;
+          userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
+          context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
+        }
         break;
       case "LOGOUT":
         context.read<MainBloc>().add(MainParam.NavToLogout(eventStatus: MainEvent.Event_Nav_Logout, context: context));

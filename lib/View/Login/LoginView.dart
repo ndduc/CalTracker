@@ -19,7 +19,7 @@ class _View extends State<LoginView> {
   TextEditingController eTUserName = TextEditingController();
   TextEditingController eTPassword = TextEditingController();
   late UserModel userModel;
-  // var formKey = GlobalKey<FormState>();
+  var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -72,11 +72,12 @@ class _View extends State<LoginView> {
              * */
             return Container(
                 color: const Color(calTracker_White),
-                child: mainBody()
-                // Form(
-                //   key: formKey,
-                //   child: mainBody(),
-                // )
+                child:
+                //mainBody()
+                Form(
+                  key: formKey,
+                  child: mainBody(),
+                )
             );
           }),
         ));
@@ -119,13 +120,13 @@ class _View extends State<LoginView> {
                   isNumber:false,
                   mask: false,
                   icon: const Icon(Icons.verified_user),
-                  // validations: (value) {
-                  //   if(eTUserName.text.isNotEmpty) {
-                  //     return null;
-                  //   } else {
-                  //     return "Please Provide Username";
-                  //   }
-                  // },
+                  validations: (value) {
+                    if(eTUserName.text.isNotEmpty) {
+                      return null;
+                    } else {
+                      return "Please Provide Username";
+                    }
+                  },
               ),
               Custom_ListTile_TextField(
                 obscureText: true,
@@ -136,13 +137,13 @@ class _View extends State<LoginView> {
                 isNumber:false,
                 mask: false,
                 icon: const Icon(Icons.password),
-                // validations: (value) {
-                //   if(eTPassword.text.isNotEmpty) {
-                //     return null;
-                //   } else {
-                //     return "Please Provide Password";
-                //   }
-                // }
+                validations: (value) {
+                  if(eTPassword.text.isNotEmpty) {
+                    return null;
+                  } else {
+                    return "Please Provide Password";
+                  }
+                }
               ),
 
               solidButton("Login", "LOGIN"),
@@ -185,25 +186,22 @@ class _View extends State<LoginView> {
   }
 
   Widget solidButton(String text, String event) {
-    return Container(
-        margin: const EdgeInsets.only(left: 2, right: 2, top: 10),
-        // height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: ElevatedButton(
+    return  ListTile(
+        title: ElevatedButton(
           // style: style,
           style: ElevatedButton.styleFrom(
               primary: const Color(calTracker_LightBlue),
               onPrimary: const Color(calTracker_White),
               textStyle: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold
               ),
               minimumSize: const Size(0,50) // put the width and height you want
           ),
           onPressed: solidBtnOnClick(text, event),
           child: Text(text),
         )
-    ) ;
+    );
   }
 
   Future<void> setSharedPref()  async {
@@ -258,10 +256,10 @@ class _View extends State<LoginView> {
       case "LOGIN":
         authentication( eTUserName.text, eTPassword.text);
 
-        // bool val = formKey.currentState!.validate();
-        // if (val) {
-        //   authentication( eTUserName.text, eTPassword.text);
-        // }
+        bool val = formKey.currentState!.validate();
+        if (val) {
+          authentication( eTUserName.text, eTPassword.text);
+        }
         break;
       case "REGISTER":
         toRegistrationView();
