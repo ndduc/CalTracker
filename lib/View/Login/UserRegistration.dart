@@ -30,7 +30,7 @@ class _View extends State<UserRegistrationView> {
   TextEditingController eTPassword = TextEditingController();
   TextEditingController eTLimitCal = TextEditingController();
   var formKey = GlobalKey<FormState>();
-
+  bool isLoadingSignUp = false;
   @override
   void initState() {
     super.initState();
@@ -54,23 +54,33 @@ class _View extends State<UserRegistrationView> {
 
   void appUserEvent(MainState state) {
     if (state is UpsertUserInitState) {
+      isLoadingSignUp = false;
     } else if (state is UpsertUserLoadingState) {
+      isLoadingSignUp = true;
     } else if (state is UpsertUserLoadedState) {
       /// If registration is a success then direct to UserView
+      isLoadingSignUp = true;
       authentication();
-    } else if (state is UpsertUserErrorState) {
+    } else if (
+    state is UpsertUserErrorState) {
+      isLoadingSignUp = false;
       print(state.error);
     }
 
-    else if (state is GetUserInitState) {}
-    else if (state is GetUserLoadingState) {}
+    else if (state is GetUserInitState) {
+      isLoadingSignUp = true;
+    }
+    else if (state is GetUserLoadingState) {
+      isLoadingSignUp = true;
+    }
     else if (state is GetUserLoadedState) {
       userModel = state.user;
       setSharedPref();
       context.read<MainBloc>().add(MainParam.NavToUser(eventStatus: MainEvent.Event_Nav_User, context: context, user: userModel));
-
+      isLoadingSignUp = false;
     }
     else if (state is GetUserErrorState) {
+      isLoadingSignUp = false;
       print(state.error);
     }
   }
@@ -123,7 +133,7 @@ class _View extends State<UserRegistrationView> {
         inputCard(),
         Align(
           alignment: Alignment.bottomCenter,
-          child: Column(
+          child: isLoadingSignUp ? ShareSpinner()  :  Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [

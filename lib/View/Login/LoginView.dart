@@ -2,6 +2,7 @@ import 'package:calories_tracker/Bloc/MainBloc/MainBloc.dart';
 import 'package:calories_tracker/Bloc/MainBloc/MainEvent.dart';
 import 'package:calories_tracker/Bloc/MainBloc/MainState.dart';
 import 'package:calories_tracker/Component/ListTextField.dart';
+import 'package:calories_tracker/Component/Spinner.dart';
 import 'package:calories_tracker/Constant_Value/AppColor.dart';
 import 'package:calories_tracker/Model/UserModel.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _View extends State<LoginView> {
   TextEditingController eTPassword = TextEditingController();
   late UserModel userModel;
   var formKey = GlobalKey<FormState>();
+  bool isLoadingLogin = false;
 
   @override
   void initState() {
@@ -41,15 +43,21 @@ class _View extends State<LoginView> {
   }
 
   Future<void> appUserEvent(MainState state) async {
-    if (state is GetUserInitState) {}
-    else if (state is GetUserLoadingState) {}
+    if (state is GetUserInitState) {
+      isLoadingLogin = false;
+    }
+    else if (state is GetUserLoadingState) {
+      isLoadingLogin = true;
+    }
     else if (state is GetUserLoadedState) {
       userModel = state.user;
       await setSharedPref();
       context.read<MainBloc>().add(MainParam.NavToUser(eventStatus: MainEvent.Event_Nav_User, context: context, user: userModel));
-
+      isLoadingLogin = false;
     }
-    else if (state is GetUserErrorState) {}
+    else if (state is GetUserErrorState) {
+      isLoadingLogin = false;
+    }
   }
 
   @override
@@ -146,7 +154,7 @@ class _View extends State<LoginView> {
                 }
               ),
 
-              solidButton("Login", "LOGIN"),
+              isLoadingLogin ? ShareSpinner() : solidButton("Login", "LOGIN"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end ,
                 // crossAxisAlignment: CrossAxisAlignment.end,
@@ -258,8 +266,6 @@ class _View extends State<LoginView> {
   void solidButtonEvent(String event) {
     switch (event) {
       case "LOGIN":
-        authentication( eTUserName.text, eTPassword.text);
-
         bool val = formKey.currentState!.validate();
         if (val) {
           authentication( eTUserName.text, eTPassword.text);
