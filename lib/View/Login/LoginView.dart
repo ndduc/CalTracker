@@ -186,21 +186,25 @@ class _View extends State<LoginView> {
   }
 
   Widget solidButton(String text, String event) {
-    return  ListTile(
-        title: ElevatedButton(
-          // style: style,
-          style: ElevatedButton.styleFrom(
-              primary: const Color(calTracker_LightBlue),
-              onPrimary: const Color(calTracker_White),
-              textStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
+    return  Padding(
+        padding: EdgeInsets.only(left: 2, right: 2),
+        child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              // style: style,
+              style: ElevatedButton.styleFrom(
+                  primary: const Color(calTracker_LightBlue),
+                  onPrimary: const Color(calTracker_White),
+                  textStyle: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                  ),
+                  minimumSize: const Size(0,50) // put the width and height you want
               ),
-              minimumSize: const Size(0,50) // put the width and height you want
-          ),
-          onPressed: solidBtnOnClick(text, event),
-          child: Text(text),
-        )
+              onPressed: solidBtnOnClick(text, event),
+              child: Text(text),
+            )
+        ),
     );
   }
 

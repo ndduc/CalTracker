@@ -23,6 +23,8 @@ class _View extends State<UserUpdateView> {
   TextEditingController eTApiKey_AWS = TextEditingController();
   TextEditingController eTCreatedDatetime = TextEditingController();
   TextEditingController eTUpdateDatetime = TextEditingController();
+  var formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -97,7 +99,12 @@ class _View extends State<UserUpdateView> {
                         )
                     )
                 ),
-            child: mainBody());
+            child:
+              Form(
+                key: formKey,
+                child: mainBody()
+              ),
+            );
           }),
         ));
   }
@@ -171,7 +178,14 @@ class _View extends State<UserUpdateView> {
                 labelText: "Password",
                 isMask: false,
                 isNumber:false,
-                mask: false
+                mask: false,
+                validations: (value) {
+                  if(eTPassword.text.isNotEmpty) {
+                    return null;
+                  } else {
+                    return "Please Provide Password";
+                  }
+                },
             )
         ),
       ],
@@ -188,6 +202,13 @@ class _View extends State<UserUpdateView> {
         isMask: false,
         isNumber:true,
         mask: false,
+        validations: (value) {
+          if(eTLimitCal.text.isNotEmpty) {
+            return null;
+          } else {
+            return "Please Provide Your Limit Calories";
+          }
+        },
       ),
     );
   }
@@ -260,9 +281,12 @@ class _View extends State<UserUpdateView> {
   void solidButtonEvent(String event) {
     switch (event) {
       case "SAVE":
-        userModel.password = eTPassword.text;
-        userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
-        context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
+        bool val = formKey.currentState!.validate();
+        if(val) {
+          userModel.password = eTPassword.text;
+          userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
+          context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
+        }
         break;
       case "LOGOUT":
         context.read<MainBloc>().add(MainParam.NavToLogout(eventStatus: MainEvent.Event_Nav_Logout, context: context));

@@ -33,7 +33,8 @@ class _View extends State<UpsertCalView> {
   TextEditingController eTTotalCal = TextEditingController();
   TextEditingController eTCustomName = TextEditingController();
   TextEditingController eTEstCal = TextEditingController();
-  // var formKey = GlobalKey<FormState>();
+  var formKeyAdd = GlobalKey<FormState>();
+  var formKeySearch = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -49,29 +50,22 @@ class _View extends State<UpsertCalView> {
   void appBaseEvent(MainState state) {
     // Executing Generic State
     if (state is GenericInitialState) {
-      print("1");
     } else if (state is GenericLoadingState) {
-      print("2");
     } else if (state is GenericLoadedState) {
-      print("3");
       isCustom = state.genericBool as bool;
     }else if (state is GenericErrorState) {
-      print("4");
     }
   }
 
   void appFoodEvent(MainState state) {
     // Executing Generic State
     if (state is GetFoodInitState) {
-      print("5");
       isLoadingGetRoutine = false;
       isFoodFound = false;
     } else if (state is GetFoodLoadingState) {
-      print("6");
       isLoadingGetRoutine = true;
       isFoodFound = false;
     } else if (state is GetFoodLoadedState) {
-      print("7");
       foodObjects = state.foods;
       if (foodObjects.listFood.isNotEmpty) {
         isFoodFound = true;
@@ -82,7 +76,6 @@ class _View extends State<UpsertCalView> {
     }
     else if (state is GetFoodErrorState) {
       print(state.error);
-      print("8");
       isFoodFound = false;
       isLoadingGetRoutine = false;
     }
@@ -90,13 +83,10 @@ class _View extends State<UpsertCalView> {
 
   void appRoutineEvent(MainState state) {
     if (state is AddRoutineInitState) {
-      print("9");
       isLoadingAddRoutine = false;
     } else if (state is AddRoutineLoadingState) {
-      print("10");
       isLoadingAddRoutine = true;
     } else if (state is AddRoutineLoadedState) {
-      print("11");
       if (state.isSucessful) {
 
       } else {
@@ -104,7 +94,6 @@ class _View extends State<UpsertCalView> {
       }
       isLoadingAddRoutine = false;
     }else if (state is AddRoutineErrorState) {
-      print("12");
       isLoadingAddRoutine = false;
     }
   }
@@ -263,44 +252,57 @@ class _View extends State<UpsertCalView> {
       willShowButton = false;
     }
 
-    return Row(
-      children: [
-        Expanded(
-          flex: 4,
-          child: Custom_ListTile_TextField(
-            read: isInTakeReadOnly,
-            controller: eTIntake,
-            labelText: "Intake By Gram",
-            isMask: false,
-            isNumber:true,
-            mask: false,
-            onChange: (value) {
-              CalculateCalWithIntake(value);
-            },
-          ),
-        ),
-        Expanded(
-            flex: 5,
-            child: Custom_ListTile_TextField(
-                read: true,
-                controller: eTTotalCal,
-                labelText: "Total Calories",
+    return Form(
+        key: formKeyAdd,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 4,
+              child: Custom_ListTile_TextField(
+                read: isInTakeReadOnly,
+                controller: eTIntake,
+                labelText: "Intake By Gram",
                 isMask: false,
                 isNumber:true,
-                mask: false
+                mask: false,
+                onChange: (value) {
+                  CalculateCalWithIntake(value);
+                },
+                validations: (value) {
+                  if(eTIntake.text.isNotEmpty) {
+                    return null;
+                  } else {
+                    return "Please Provide Your Intake Calories";
+                  }
+                },
+              ),
+            ),
+            Expanded(
+                flex: 5,
+                child: Custom_ListTile_TextField(
+                    read: true,
+                    controller: eTTotalCal,
+                    labelText: "Total Calories",
+                    isMask: false,
+                    isNumber:true,
+                    mask: false
+                )
+            ),
+            !willShowButton ? SizedBox() :
+            Expanded(
+              flex: 1,
+              child: isLoadingAddRoutine ? ShareSpinner() : IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  bool val = formKeyAdd.currentState!.validate();
+                  if (val) {
+                    addCaloriesEvent();
+                  }
+                },
+              ),
             )
-        ),
-        !willShowButton ? SizedBox() :
-        Expanded(
-          flex: 1,
-          child: isLoadingAddRoutine ? ShareSpinner() : IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              addCaloriesEvent();
-            },
-          ),
+          ],
         )
-      ],
     );
   }
 
@@ -319,37 +321,49 @@ class _View extends State<UpsertCalView> {
 
   Widget ApiOrCustom() {
     if (!isCustom) {
-      return Row(
-        children: [
-          Expanded(
-              flex: 9,
-              child: Custom_ListTile_TextField(
-                  read: false,
-                  controller: eTSearchQuery,
-                  labelText: "Search Calories",
-                  hintText: "Enter text to search for approx. cal",
-                  isMask: false,
-                  isNumber:false,
-                  mask: false
-              )
-          ),
-          Expanded(
-            flex: 1,
-            child:
-            isLoadingGetRoutine ? ShareSpinner() :
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                print("TEST");
-                Map<String, dynamic> param = {
-                  "query": eTSearchQuery.text
-                };
-                context.read<MainBloc>().add(MainParam.GetFood(eventStatus: MainEvent.Event_NinjaFood_Get, param:param));
+      return Form(
+          key: formKeySearch,
+          child: Row(
+            children: [
+              Expanded(
+                  flex: 9,
+                  child: Custom_ListTile_TextField(
+                      read: false,
+                      controller: eTSearchQuery,
+                      labelText: "Search Calories",
+                      hintText: "Enter text to search for approx. cal",
+                      isMask: false,
+                      isNumber:false,
+                      mask: false,
+                      validations: (value) {
+                        if(eTSearchQuery.text.isNotEmpty) {
+                          return null;
+                        } else {
+                          return "Please Enter Item For Search";
+                        }
+                      },
+                  )
+              ),
+              Expanded(
+                flex: 1,
+                child:
+                isLoadingGetRoutine ? ShareSpinner() :
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    bool val = formKeySearch.currentState!.validate();
+                    if (val) {
+                      Map<String, dynamic> param = {
+                        "query": eTSearchQuery.text
+                      };
+                      context.read<MainBloc>().add(MainParam.GetFood(eventStatus: MainEvent.Event_NinjaFood_Get, param:param));
 
-              },
-            ),
+                    }
+                  },
+                ),
+              )
+            ],
           )
-        ],
       );
     } else {
       return Column(
