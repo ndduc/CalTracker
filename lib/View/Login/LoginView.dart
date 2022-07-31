@@ -2,8 +2,8 @@ import 'package:calories_tracker/Bloc/MainBloc/MainBloc.dart';
 import 'package:calories_tracker/Bloc/MainBloc/MainEvent.dart';
 import 'package:calories_tracker/Bloc/MainBloc/MainState.dart';
 import 'package:calories_tracker/Component/ListTextField.dart';
+import 'package:calories_tracker/Constant_Value/AppColor.dart';
 import 'package:calories_tracker/Model/UserModel.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +19,8 @@ class _View extends State<LoginView> {
   TextEditingController eTUserName = TextEditingController();
   TextEditingController eTPassword = TextEditingController();
   late UserModel userModel;
+  // var formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +57,7 @@ class _View extends State<LoginView> {
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           body: BlocBuilder<MainBloc,MainState>(builder: (BuildContext context,MainState state) {
             /**
              * BLoc Action Note
@@ -68,14 +71,13 @@ class _View extends State<LoginView> {
              * END
              * */
             return Container(
-                // padding: EdgeInsets.only(top: 50),
-                // decoration: BoxDecoration(
-                //   image: DecorationImage(
-                //     image: AssetImage(uImage.mapImage['bg-3']),
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
-                child: mainBody());
+                color: const Color(calTracker_White),
+                child: mainBody()
+                // Form(
+                //   key: formKey,
+                //   child: mainBody(),
+                // )
+            );
           }),
         ));
   }
@@ -85,38 +87,117 @@ class _View extends State<LoginView> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Custom_ListTile_TextField(
-            read: false,
-            controller: eTUserName,
-            labelText: "UserName",
-            isMask: false,
-            isNumber:false,
-            mask: false
+        Container(
+          margin: const EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: const Text(
+                    "Welcome To Calories Tracker",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25
+                    ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 40),
+                child: const Text(
+                  "Please Sign To Continue",
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Color(calTracker_Gray)
+                  ),
+                ),
+              ),
+              Custom_ListTile_TextField(
+                  read: false,
+                  controller: eTUserName,
+                  labelText: "Username",
+                  isMask: false,
+                  isNumber:false,
+                  mask: false,
+                  icon: const Icon(Icons.verified_user),
+                  // validations: (value) {
+                  //   if(eTUserName.text.isNotEmpty) {
+                  //     return null;
+                  //   } else {
+                  //     return "Please Provide Username";
+                  //   }
+                  // },
+              ),
+              Custom_ListTile_TextField(
+                obscureText: true,
+                read: false,
+                controller: eTPassword,
+                labelText: "Password",
+                isMask: false,
+                isNumber:false,
+                mask: false,
+                icon: const Icon(Icons.password),
+                // validations: (value) {
+                //   if(eTPassword.text.isNotEmpty) {
+                //     return null;
+                //   } else {
+                //     return "Please Provide Password";
+                //   }
+                // }
+              ),
+
+              solidButton("Login", "LOGIN"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end ,
+                // crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Text(
+                    "Don't have account?",
+                    style: TextStyle(
+                      fontSize: 15
+                    ),
+                  ),
+                  textButton("create a new account.", "REGISTER"),
+                ],
+              )
+          //    solidButton("Registration", "REGISTER")
+            ],
+
+          ),
         ),
-        Custom_ListTile_TextField(
-            obscureText: true,
-            read: false,
-            controller: eTPassword,
-            labelText: "Password",
-            isMask: false,
-            isNumber:false,
-            mask: false
-        ),
-        solidButton("Login", "LOGIN"),
-        solidButton("Registration", "REGISTER")
+
 
       ],
     );
   }
 
+  Widget textButton(String text, String event) {
+    return Container(
+      child: TextButton(
+        style: TextButton.styleFrom(
+          // padding: const EdgeInsets.all(16.0),
+          primary: const Color(calTracker_LightBlue),
+          textStyle: const TextStyle(fontSize: 15),
+        ),
+        onPressed: solidBtnOnClick(text, event),
+        child: Text(text),
+      ),
+    );
+  }
 
   Widget solidButton(String text, String event) {
-    return ListTile(
-        title: ElevatedButton(
-
+    return Container(
+        margin: const EdgeInsets.only(left: 2, right: 2, top: 10),
+        // height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: ElevatedButton(
           // style: style,
           style: ElevatedButton.styleFrom(
-
+              primary: const Color(calTracker_LightBlue),
+              onPrimary: const Color(calTracker_White),
+              textStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              ),
               minimumSize: const Size(0,50) // put the width and height you want
           ),
           onPressed: solidBtnOnClick(text, event),
@@ -176,6 +257,11 @@ class _View extends State<LoginView> {
     switch (event) {
       case "LOGIN":
         authentication( eTUserName.text, eTPassword.text);
+
+        // bool val = formKey.currentState!.validate();
+        // if (val) {
+        //   authentication( eTUserName.text, eTPassword.text);
+        // }
         break;
       case "REGISTER":
         toRegistrationView();

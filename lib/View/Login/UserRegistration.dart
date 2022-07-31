@@ -29,6 +29,8 @@ class _View extends State<UserRegistrationView> {
   TextEditingController eTUserName = TextEditingController();
   TextEditingController eTPassword = TextEditingController();
   TextEditingController eTLimitCal = TextEditingController();
+  // var formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -92,19 +94,24 @@ class _View extends State<UserRegistrationView> {
              * END
              * */
             return Container(
-                padding: const EdgeInsets.only(top: 53, bottom: 8, left: 8, right: 8),
+                padding: const EdgeInsets.only(top: 53, bottom: 30, left: 8, right: 8),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
                     color: Color(calTracker_White),
-                    border: Border(
-                        left: BorderSide(
-                            color: Color(calTracker_LightBlue),
-                            width: 5
-                        )
-                    )
+                    // border: Border(
+                    //     left: BorderSide(
+                    //         color: Color(calTracker_LightBlue),
+                    //         width: 5
+                    //     )
+                    // )
                 ),
-                child: mainBody());
+                child: mainBody()
+                // Form(
+                //   key: formKey,
+                //   child: mainBody(),
+                // )
+            );
           }),
         ));
   }
@@ -152,6 +159,13 @@ class _View extends State<UserRegistrationView> {
             isMask: false,
             isNumber:false,
             mask: false,
+            // validations: (value) {
+            //   if(eTUserName.text.isNotEmpty) {
+            //     return null;
+            //   } else {
+            //     return "Please Provide Username";
+            //   }
+            // },
           ),
         ),
         Expanded(
@@ -162,7 +176,14 @@ class _View extends State<UserRegistrationView> {
                 labelText: "Password",
                 isMask: false,
                 isNumber:false,
-                mask: false
+                mask: false,
+                // validations: (value) {
+                //   if(eTPassword.text.isNotEmpty) {
+                //     return null;
+                //   } else {
+                //     return "Please Provide Password";
+                //   }
+                // },
             )
         ),
       ],
@@ -179,6 +200,13 @@ class _View extends State<UserRegistrationView> {
         isMask: false,
         isNumber:true,
         mask: false,
+        // validations: (value) {
+        //   if(eTLimitCal.text.isNotEmpty) {
+        //     return null;
+        //   } else {
+        //     return "Please Provide Your Daily Calories Limit";
+        //   }
+        // },
       ),
     );
   }
@@ -215,6 +243,14 @@ class _View extends State<UserRegistrationView> {
         userModel.password = eTPassword.text;
         userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
         context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
+        // bool val = formKey.currentState!.validate();
+        // if(val) {
+        //   userModel = UserModel();
+        //   userModel.userName = eTUserName.text;
+        //   userModel.password = eTPassword.text;
+        //   userModel.dailyCaloriesLimit = double.parse(eTLimitCal.text);
+        //   context.read<MainBloc>().add(MainParam.UpsertUser(eventStatus: MainEvent.Event_User_Upsert, user: userModel));
+        // }
         break;
       case "LOGOUT":
         context.read<MainBloc>().add(MainParam.NavToLogout(eventStatus: MainEvent.Event_Nav_Logout, context: context));

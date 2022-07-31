@@ -33,6 +33,7 @@ class _View extends State<UpsertCalView> {
   TextEditingController eTTotalCal = TextEditingController();
   TextEditingController eTCustomName = TextEditingController();
   TextEditingController eTEstCal = TextEditingController();
+  // var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -48,22 +49,29 @@ class _View extends State<UpsertCalView> {
   void appBaseEvent(MainState state) {
     // Executing Generic State
     if (state is GenericInitialState) {
+      print("1");
     } else if (state is GenericLoadingState) {
+      print("2");
     } else if (state is GenericLoadedState) {
+      print("3");
       isCustom = state.genericBool as bool;
     }else if (state is GenericErrorState) {
+      print("4");
     }
   }
 
   void appFoodEvent(MainState state) {
     // Executing Generic State
     if (state is GetFoodInitState) {
+      print("5");
       isLoadingGetRoutine = false;
       isFoodFound = false;
     } else if (state is GetFoodLoadingState) {
+      print("6");
       isLoadingGetRoutine = true;
       isFoodFound = false;
     } else if (state is GetFoodLoadedState) {
+      print("7");
       foodObjects = state.foods;
       if (foodObjects.listFood.isNotEmpty) {
         isFoodFound = true;
@@ -71,7 +79,10 @@ class _View extends State<UpsertCalView> {
         isFoodFound = false;
       }
       isLoadingGetRoutine = false;
-    } else if (state is GetFoodErrorState) {
+    }
+    else if (state is GetFoodErrorState) {
+      print(state.error);
+      print("8");
       isFoodFound = false;
       isLoadingGetRoutine = false;
     }
@@ -79,10 +90,13 @@ class _View extends State<UpsertCalView> {
 
   void appRoutineEvent(MainState state) {
     if (state is AddRoutineInitState) {
+      print("9");
       isLoadingAddRoutine = false;
     } else if (state is AddRoutineLoadingState) {
+      print("10");
       isLoadingAddRoutine = true;
     } else if (state is AddRoutineLoadedState) {
+      print("11");
       if (state.isSucessful) {
 
       } else {
@@ -90,6 +104,7 @@ class _View extends State<UpsertCalView> {
       }
       isLoadingAddRoutine = false;
     }else if (state is AddRoutineErrorState) {
+      print("12");
       isLoadingAddRoutine = false;
     }
   }
@@ -118,7 +133,7 @@ class _View extends State<UpsertCalView> {
               decoration: const BoxDecoration(
                 color: Color(calTracker_White)
               ),
-                child: mainBody());
+              child: mainBody());
           }),
         ));
   }
@@ -325,6 +340,7 @@ class _View extends State<UpsertCalView> {
             IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
+                print("TEST");
                 Map<String, dynamic> param = {
                   "query": eTSearchQuery.text
                 };

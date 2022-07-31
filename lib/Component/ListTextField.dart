@@ -23,6 +23,7 @@ class Custom_ListTile_TextField extends StatelessWidget {
   var hintText;
   int? maxLines;
   bool? obscureText;
+  Icon? icon;
 
   Custom_ListTile_TextField(
       {Key? key, required this.isMask,
@@ -39,7 +40,8 @@ class Custom_ListTile_TextField extends StatelessWidget {
         this.onFocusChange,
         this.autoValidate,
         required this.isNumber,
-        this.obscureText
+        this.obscureText,
+        this.icon
         //  required this.textInput
       }) : super(key: key);
 
@@ -70,7 +72,9 @@ class Custom_ListTile_TextField extends StatelessWidget {
                     border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                     // fillColor: ThemeColors.confidenceBlue,
-                    filled: read ? true : false),
+                    filled: read ? true : false,
+                    // prefixIcon: icon
+                ),
                 controller: controller,
                 validator: validations,
               )
